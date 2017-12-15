@@ -1,0 +1,65 @@
+#properties 文件转化成 yml 规格的配置文件
+---
+#属性变量 文件中使用@Value("${xx}")注入
+#book:
+  #name: 伊丽莎白
+
+#Tomcat端口配置
+server:
+  port: 8099
+  context-path: /moekosu
+  tomcat.uri-encoding: UTF-8
+
+#中文乱码问题
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  #设定激活当前活动的环境为dev环境，调用application-dev.yml的配置
+  #profiles:
+      #active: dev
+  #mybatis连接数据库配置
+  datasource:
+    name: mydb
+    type: com.alibaba.druid.pool.DruidDataSource #alibaba.druid连接池
+    url: jdbc:mysql://10.12.9.161:3306/dccp_dev #mysql地址
+    username: dccp
+    password: dccp321
+    driver-class-name: com.mysql.jdbc.Driver
+    tomcat:
+      min-idle: 1
+      max-active: 2
+      initial-size: 1
+      time-between-eviction-runs-millis: 3000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'ZTM' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+#日志输出(超过10M会被分割，默认记录ERROR, INFO, WARN级别日志)
+logging:
+  file: D:/intellijProject/logging
+#logging.level.com.moekosu.service=DEBUG //com.moekosu.service包下的错误是debug级别
+#logging.level.com.moekosu.dao=ERROR //com.moekosu.dao包下的错误是error级别
+#logging.level.com.moekosu.web=INFO //com.moekosu.web包下的错误是info级别
+
+#mybatis连接数据库配置
+mybatis:
+  #config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.moekosu.constant
+
+#Redis配置
+jedis:
+  pool:
+    host: 127.0.0.1
+    port: 6379
+    config:
+      maxTotal: 100
+      maxIdle: 10
+      maxWaitMillis: 100000
