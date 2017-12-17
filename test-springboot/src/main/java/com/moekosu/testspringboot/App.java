@@ -1,5 +1,6 @@
 package com.moekosu.testspringboot;
 
+import com.moekosu.constant.User;
 import com.moekosu.constant.UserLogin;
 import com.moekosu.redisConfig.RedisClient;
 import com.moekosu.service.UserService;
@@ -61,8 +62,24 @@ public class App {
         }
 
         // TODO 在console打出信息，没有输出log文件
-        logger.info("----------query user login msg list by db-----------");
+        logger.info("----------query user login msg list by company db-----------");
 
+        return result;
+    }
+
+    @RequestMapping("/getUserList")
+    @ResponseBody
+    public String getUserList()
+    {
+        String result = "";
+        List<User> list = userService.getAllUserList();
+
+        for(User u : list)
+        {
+            result += u.toString();
+        }
+
+        logger.info("----------query user list by moekosu local db-----------");
         return result;
     }
 

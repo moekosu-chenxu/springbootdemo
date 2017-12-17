@@ -8,7 +8,11 @@
 
     <select id="getUserList" resultMap="User">
         SELECT
-            *
+            u.id as id,
+            u.name as name,
+            u.password as password,
+            u.age as age,
+            u.description as description
         FROM
             USER u
     </select>
