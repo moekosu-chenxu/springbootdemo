@@ -12,6 +12,8 @@ public class User implements Serializable {
 
     private int age;
 
+    private String description;
+
     public String getId() {
         return id;
     }
@@ -42,6 +44,14 @@ public class User implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
