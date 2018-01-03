@@ -8,6 +8,7 @@
 1.做一个前台页面（Vue.js或者简单的html）  
 2.Nginx做负载均衡，实现前台调用spring boot接口  
 3.ip绑定域名  
+4.docker部署项目(包含前提：学习Linux sh编写)  
    
 # Difficulties encountered  
 1.CentOS 打包Maven 遇到jdk错误，路径不对；解决方案：重新安装yum install java-devel版本，才有javac  
