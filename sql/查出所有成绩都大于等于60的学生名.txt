@@ -1,0 +1,26 @@
+select distinct 
+cc.name
+FROM
+class cc
+where not exists(
+SELECT 
+c.name 
+FROM 
+class c
+WHERE cc.name = c.name 
+and c.score < 60
+)
+
+select distinct 
+cc.name
+FROM
+class cc
+where cc.name not in(
+SELECT 
+c.name 
+FROM 
+class c
+where c.score < 60
+)
+
+查出所有成绩都大于等于60的学生名

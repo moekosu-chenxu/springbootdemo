@@ -1,0 +1,26 @@
+update scoreavg as upav,                                      //update后带两张表，后面才能使用
+(
+select 
+av.id,
+(s.stuval1+s.stuval2+s.stuval3) as val ,
+round((s.stuval1+s.stuval2+s.stuval3)/3, 0) as valavg 
+from 
+-- score as s                                                      //两个方向，直接使用score是将数据相加，而使用group by排序是将可能学生id相同的几个成绩先加起来
+-- (
+	select 
+	ss.stuid, sum(ss.stuval1) as stuval1, sum(ss.stuval2) as stuval2, sum(ss.stuval3) as stuval3
+	from
+	score ss
+	group by ss.stuid
+) as s
+left join 
+scoreavg as av 
+on 
+s.stuid = av.id
+) as a                                                             //构建a虚表
+set upav.stusum = a.val, upav.stuavg = a.valavg          //设值
+where 
+a.id = upav.id                                                   //表1与表2的对等条件
+
+score表中有v1，v2，v3三个成绩，scoreAvg表中有总分、平均分两个字段
+将v1，v2，v3计算出总分与平均分后update进avg表中
