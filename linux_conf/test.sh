@@ -41,7 +41,65 @@ echo ${SPLIT:0-7}
 
 #定义数组
 ARR=("a" "b")
-echo ${ARR[1]}
+echo ${ARR[1]} #输出第二个参数(从0开始)
 echo ${ARR[@]} #输出数组所有参数
 echo ${#ARR[@]} #输出数组长度
+
+# $数字 能输出传入的参数 0是文件名 从1开始是传入的参数，如./test.sh zz，则$1会输出zz，以此类推，$2 $3
+echo $0
+echo $1
+echo $# #输出传入字符串的个数
+echo $* #输出传入的所有字符串，用""括起来，相当于输出了一个参数
+#循环测试，只会输出一个zz xx cc
+for i in "$*"; do echo $i 
+done
+echo $@ #也是输出所有字符串，但是每个都单独用""括起来，相当于输出了多个参数
+#循环测试，会输出三个参数，分别是zz xx cc
+for j in "$@"; do echo $j 
+done
+echo $$ #输出脚本运行的当前进程ID
+
+#运算符操作，注意使用运算要使用`反引号，而不是'单引号，特别注意运算符中间要带空格，必须写 2 + 2
+#+加法 -减法 *乘法 /除法 %取余 =赋值 ==判断相等 !=判断不等
+sum=`expr 2 + 2`
+echo "sum is $sum"
+#关系运算符，只支持数字
+#-eq判断是否相等 -ne判断是否不相等 -gt是否大于 -lt是否小于 -ge是否大于等于 -le是否小于等于
+num1=10
+num2=20
+if [ $num1 -gt $num2 ]
+then
+  echo 'n1 bigger than n2'
+else
+  echo 'n1 smaller than n2'
+fi
+#布尔运算符 
+#!非 [!false]返回true
+#-o或运算 [$num1 -lt 20 -o $num2 -gt 15] n1小于20 || n2大于15
+#也可以使用||
+#-a与运算 [$num1 -lt 20 -a $num2 -gt 15] n1小于20 && n2大于15
+#也可以使用&&
+if [ $num1 -lt 20 ]
+then
+  echo 1
+else
+  echo 2
+fi
+#字符串运算符
+#=是否相等 !=是否不等 -z长度是否为0[-z str1] -n长度是否不为0[-n str1] 直接写str判断字符串是否为空不为空返回true
+str1='asd'
+if [ $str1 ]
+then
+  echo 'has value'
+else
+  echo 'no value'
+fi
+#文件测试运算符
+
+
+
+
+
+
+
 
