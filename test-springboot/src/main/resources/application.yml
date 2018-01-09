@@ -29,7 +29,7 @@ spring:
     #url: jdbc:mysql://10.12.9.161:3306/dccp_dev #mysql地址 dccp dccp321
     url: jdbc:mysql://moekosu-1.mysql.rds.aliyuncs.com:3306/test #mysql地址
     username: root
-    password: Moekosu@123123
+    password: /
     driver-class-name: com.mysql.jdbc.Driver
     tomcat:
       min-idle: 1
