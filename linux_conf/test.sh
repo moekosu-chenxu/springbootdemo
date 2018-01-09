@@ -95,11 +95,130 @@ else
   echo 'no value'
 fi
 #文件测试运算符
+#-b file是否是块设备文件 -c file是否是字符设备文件 -d file是否是目录 -f file是否是普通文件(不是目录也不是设备文件)
+#-g file是否设置了SGID位 -k file是否设置了黏着位 -p file是否是有名管道 -u file是否设置了SUID位
+#-r file是否可读 -w file是否可写 -x file是否可执行 -s file是否为空(文件大小是否大于0) -e file文件是否存在(包含目录)
+if [ -e '/opt/aspire/product/dccp_test/test/test.sh' ]
+then 
+  echo 'file exist'
+else
+  echo 'file not exist'
+fi
 
+#echo -e开启转义 \c开启换行
+echo -e "Hello \n World!"
+#显示日期，注意是反引号
+echo `date`
+#将结果写入文件
+echo 'this is a test inputstream' > myfile
 
+#printf与echo类似，但是也有强大之处
+#%c %s %d %f 格式替代符
+#%-10s 表示宽度为10个字符，-表示左对齐，不够10个字符用空格替代
+#%-4.2f 指格式化为小数，.2表示保留2位小数
+printf "%-10s %-8s %-4s\n" 姓名 性别 体重kg  
+printf "%-10s %-8s %-4.2f\n" 郭靖 男 66.1234 
+printf "%-10s %-8s %-4.2f\n" 杨过 男 48.6543 
+printf "%-10s %-8s %-4.2f\n" 郭芙 女 47.9876
+#%s表示string字符串 %d表示decimal数字(必须是十进制数字) %f表示float小数 %c表示char字符
+printf "%s %s\n" "123" "456" "asd" "zxc"
 
+#test 跟[] 一样 if test a gt b = if [ a gt b ]
 
+#if运算符
+if [ 1=1 ]
+then
+ echo '1=1'
+#else 这里可以不写
+fi
+#if else if else 用法
+if [ 1=1 ]
+then
+  echo 1
+elif [ 1=1 ]
+then 
+  echo 2
+else
+  echo 3
+fi
 
+#for循环
+for loop in 1 2 3
+do
+  echo 'value is: $loop'
+x
+done
 
+#while语句
+whileInt=1
+while(( $whileInt<=5 ))
+do
+    echo $whileInt
+    let "whileInt++"
+done
+#同时while能读取键盘输入，这里用户输入的内容定为FILM
+echo -n '输入你最喜欢的网站名: '
+while read FILM
+do
+  echo "是的！$FILM 是一个好网站"
+  break
+done
+
+#无限循环
+#while :
+#do ... done
+#或者
+#while true
+#do ... done
+#或者
+#for (( ; ; ))
+
+#case表达式 使用in 各种情况值后必须加) 内容语句执行到;;结束 使用esac结尾 PS可以使用break continue
+echo '输入 1 到 4 之间的数字:'
+echo '你输入的数字为:'
+read aNum
+case $aNum in
+    1)  echo '你选择了 1'
+    ;;
+    2)  echo '你选择了 2'
+    ;;
+    3)  echo '你选择了 3'
+    ;;
+    4)  echo '你选择了 4'
+    ;;
+    *)  echo '你没有输入 1 到 4 之间的数字'
+    ;;
+esac
+
+#定义function 可以写function name(){} 也可以直接写funName(){} 
+funCode(){
+  echo 'funCode.call that my fun.'
+}
+echo 'call function start--'
+funCode
+echo 'call function end--'
+#带有return的方法 调用的时候使用$?
+funReturn(){
+  return 'fun return 1'
+}
+funReturn
+echo "funReturn return $?" #$?只能输出数字，字符串不知道用什么 TODO
+#方法传递参数
+funParam(){
+  echo "方法传入的第1个参数: $1"
+  echo "总共有 $# 个参数"
+  echo "所有参数: $@"
+}
+funParam 'p1' 'p2' 'p3' 'p4'
+
+#输入重定向操作
+#a > file 将a输入到file 注意file内的内容会清空替换为a
+#a >> file 将a添加到file的最末尾 不会清空原来的内容
+echo 'zz' >> myfile
+#cat 输出文件内容
+cat myfile
+#输出重定向操作 TODO 报错
+echo file1 < myfile
+echo fileLen -l < myfile #文件行数
 
 
