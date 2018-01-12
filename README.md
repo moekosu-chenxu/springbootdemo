@@ -10,6 +10,7 @@
 3.ip绑定域名  
 4.docker部署项目(包含前提：学习Linux sh编写)  
 5.Linux log: grep | sed | awk  
+6.Guava  
    
 # Difficulties encountered  
 1.CentOS 打包Maven 遇到jdk错误，路径不对；解决方案：重新安装yum install java-devel版本，才有javac  
