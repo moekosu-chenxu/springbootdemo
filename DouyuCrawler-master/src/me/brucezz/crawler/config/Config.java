@@ -26,6 +26,8 @@ public class Config {
     public static String DB_NAME = null;
     public static String DB_USERNAME = null;
     public static String DB_PASSWORD = null;
+    
+    public static int CURR_ROOM_ID = -1;
 
     /**
      * 键  房间简称( 即room.url.XXX中的XXX )
@@ -46,6 +48,7 @@ public class Config {
             DB_NAME = properties.getProperty("db.name");
             DB_USERNAME = properties.getProperty("db.username");
             DB_PASSWORD = properties.getProperty("db.password");
+            CURR_ROOM_ID = Integer.valueOf(properties.getProperty("room.current.id"));
 
             Set<Object> objects = properties.keySet();
             for (Object object : objects) {

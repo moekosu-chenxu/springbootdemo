@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class ResponseParser {
 
-    private static final String REGEX_ROOM_ID = "\"room_id\":(\\d*),";
+    private static final String REGEX_ROOM_ID = "\"room_id\\\":(\\d*),";
     private static final String REGEX_ROOM_STATUS = "\"show_status\":(\\d*),";
     private static final String REGEX_SERVER = "%7B%22ip%22%3A%22(.*?)%22%2C%22port%22%3A%22(.*?)%22%7D%2C";
     private static final String REGEX_GROUP_ID = "type@=setmsggroup.*/rid@=(\\d*?)/gid@=(\\d*?)/";
@@ -40,7 +40,7 @@ public class ResponseParser {
         if (matcher.find()) {
             rid = Integer.parseInt(matcher.group(1));
         }
-
+        
         LogUtil.d("Parse RoomId", rid + "");
         return rid;
     }
@@ -66,10 +66,17 @@ public class ResponseParser {
         List<ServerInfo> serverList = new ArrayList<>();
 
         while (matcher.find()) {
-            ServerInfo serverInfo = new ServerInfo(matcher.group(1), Integer.parseInt(matcher.group(2)));
-            serverList.add(serverInfo);
+        	try{
+        		ServerInfo serverInfo = new ServerInfo(matcher.group(1), Integer.parseInt(matcher.group(2)));
+        		serverList.add(serverInfo);
+        		
+        		LogUtil.d("Parse ServerInfo", serverInfo.toString());
+        	}
+        	catch( Exception e ){
+        		LogUtil.d("Parse ServerInfo error");
+        		return serverList;
+        	}
 
-            LogUtil.d("Parse ServerInfo", serverInfo.toString());
         }
         return serverList;
     }

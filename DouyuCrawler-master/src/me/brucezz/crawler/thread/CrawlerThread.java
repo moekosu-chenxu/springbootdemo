@@ -3,6 +3,7 @@ package me.brucezz.crawler.thread;
 import me.brucezz.crawler.bean.Danmaku;
 import me.brucezz.crawler.bean.Request;
 import me.brucezz.crawler.bean.ServerInfo;
+import me.brucezz.crawler.config.Config;
 import me.brucezz.crawler.db.DanmakuDao;
 import me.brucezz.crawler.handler.MessageHandler;
 import me.brucezz.crawler.handler.ResponseParser;
@@ -117,15 +118,16 @@ public class CrawlerThread implements Runnable {
 
         //获取roomId
         LogUtil.i("获取直播房间ID ...");
-        rid = ResponseParser.parseRoomId(pageHtml);
+//        rid = ResponseParser.parseRoomId(pageHtml);
+        rid = Config.CURR_ROOM_ID;
 
         //检查是否在线
-        boolean online = ResponseParser.parseOnline(pageHtml);
-        if (!online) {
-            LogUtil.w("该房间还没有直播！" + roomUrl);
-            onExit();
-            return;
-        }
+//        boolean online = ResponseParser.parseOnline(pageHtml);
+//        if (!online) {
+//            LogUtil.w("该房间还没有直播！" + roomUrl);
+//            onExit();
+//            return;
+//        }
 
         //获取服务器IP列表
         LogUtil.i("获取服务器列表 ...");
