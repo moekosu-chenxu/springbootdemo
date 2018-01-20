@@ -22,6 +22,7 @@ public class ResponseParser {
     private static final String REGEX_DANMAKU_SERVER = "/ip@=(.*?)/port@=(\\d*?)/";
     private static final String REGEX_CHAT_DANMAKU = "type@=chatmsg/.*rid@=(\\d*?)/.*uid@=(\\d*).*nn@=(.*?)/txt@=(.*?)/(.*)/";
 
+    private static final String REGEX_DOUBAN = "<td class=\"title\">(.{0,200})</td>";
 
     private static Matcher getMatcher(String content, String regex) {
         Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
@@ -136,6 +137,27 @@ public class ResponseParser {
         LogUtil.d("Parse Danmaku", danmaku + "");
 
         return danmaku;
+    }
+    
+    public static List<String> parseDouban(String page)
+    {
+    	Matcher matcher = getMatcher(page, REGEX_DOUBAN);
+    	List<String> list = new ArrayList<String>();
+    	while(matcher.find())
+    	{
+    		String path = matcher.group(1);
+    		//
+    		String url_ = path.split(">")[0];
+    		int https = url_.indexOf("https://");
+    		int title = url_.indexOf("title");
+    		String url = url_.substring(https, title-2);
+    		//
+    		String path_ = path.split(">")[1];
+    		String name = path_.split("<")[0];
+    		
+    		list.add(name);
+    	}
+    	return list;
     }
 
 
