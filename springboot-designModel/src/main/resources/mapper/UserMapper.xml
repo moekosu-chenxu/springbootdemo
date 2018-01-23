@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.moekosu.dao.UserMapper" >
+
+    <resultMap id="User" type="com.moekosu.constant.User">
+
+    </resultMap>
+
+    <select id="getUserList" resultMap="User">
+        SELECT
+            *
+        FROM
+            USER u
+    </select>
+
+</mapper>
