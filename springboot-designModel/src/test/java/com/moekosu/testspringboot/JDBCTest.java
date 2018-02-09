@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.sql.*;
 
 /**
+ * 基础JDBC操作，对比验证设计模式：Bridge桥接模式
  * @author chenxu
  * @date 2018/02
  */
@@ -28,7 +29,7 @@ public class JDBCTest {
         stat = conn.createStatement();
         // 执行sql语句
         rs = stat.executeQuery("select * from student");
-        //
+        // 结果
         while(rs.next()){
             System.out.println(rs.getString("name"));
         }

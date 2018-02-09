@@ -34,7 +34,7 @@ public class BridgeTest {
     }
 
     /**
-     * 桥接模式，模拟旧式JDBC连接实现方式
+     * 桥接模式，模拟旧式JDBC连接实现方式 [JDBCTest.java]
      * 先Class.forName()初始化驱动类，这时会调用驱动类中的静态初始块，注册实例进DriverManager中拿到对应的Driver实例
      * 然后调用getConnection()方法，他会使用已经有的Driver实例去调用connect()方法获取MyConnection对象
      */
