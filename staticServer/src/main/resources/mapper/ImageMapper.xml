@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.moekosu.dao.ImageMapper" >
+
+    <resultMap id="Image" type="com.moekosu.constant.Image">
+
+    </resultMap>
+
+    <!-- 新增文章 -->
+    <insert id="insert">
+        INSERT INTO
+        image(name, path, status)
+        VALUES (
+        #{name}, #{path}, 1
+        )
+    </insert>
+
+    <!-- 获取单个文章详情信息 -->
+    <select id="getImageByKey" parameterType="com.moekosu.constant.Image" resultMap="Image">
+        SELECT
+        img.id as id,
+        img.name as name,
+        img.path as path,
+        img.status as status
+        FROM
+        image img
+        <where>
+          <if test="id != null and id != ''">
+            img.id= #{id}
+          </if>
+          <if test="name != null and name != ''">
+            img.id= #{name}
+          </if>
+          <if test="path != null and path != ''">
+            img.id= #{path}
+          </if>
+        </where>
+    </select>
+
+
+</mapper>
