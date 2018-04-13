@@ -7,7 +7,7 @@
     </resultMap>
 
     <!-- 新增文章 -->
-    <insert id="insert">
+    <insert id="insert" parameterType="com.moekosu.constant.Image">
         INSERT INTO
         image(name, path, status)
         VALUES (

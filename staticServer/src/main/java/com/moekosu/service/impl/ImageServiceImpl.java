@@ -13,9 +13,9 @@ public class ImageServiceImpl implements ImageService {
     private ImageMapper imageMapper;
 
     @Override
-    public void insert()
+    public void insert(Image img)
     {
-        imageMapper.insert();
+        imageMapper.insert(img);
     }
 
     @Override
