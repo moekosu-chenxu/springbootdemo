@@ -1,0 +1,45 @@
+#properties 文件转化成 yml 规格的配置文件
+---
+#Tomcat端口配置
+server:
+  port: 8099
+  context-path: /moekosu
+  tomcat.uri-encoding: UTF-8
+
+#中文乱码问题
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  #mybatis连接数据库配置
+  datasource:
+    name: mydb
+    type: com.alibaba.druid.pool.DruidDataSource #alibaba.druid连接池
+    url: jdbc:mysql://10.12.9.161:3306/dccp_dev
+    username: dccp
+    password: dccp321
+    driver-class-name: com.mysql.jdbc.Driver
+    tomcat:
+      min-idle: 1
+      max-active: 2
+      initial-size: 1
+      time-between-eviction-runs-millis: 3000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'ZTM' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+#日志输出(超过10M会被分割，默认记录ERROR, INFO, WARN级别日志)
+logging:
+  file: D:/intellijProject/logging
+
+#mybatis连接数据库配置
+mybatis:
+  #config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.moekosu.constant
