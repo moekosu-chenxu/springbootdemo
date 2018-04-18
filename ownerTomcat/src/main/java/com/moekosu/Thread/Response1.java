@@ -5,6 +5,7 @@ import com.moekosu.logger.ServerLoggerFactory;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * @author chenxu
@@ -16,59 +17,82 @@ public class Response1 {
 
     private static final String WEB_ROOT = "D:\\tomdog\\webapps";
     private static final int BUFFER_LEN = 1024;
+    private static final String PROTOCOL = "HTTP/1.1";
 
-    private Request1 request;
+    private static final int STATUS_OK = 200;
+    private static final String DESC_OK = "OK";
+    private static final int STATUS_NOT_FOUND = 404;
+    private static final String DESC_NOT_FOUND = "Page Not Found";
+    private static final int STATUS_ERROR = 500;
+    private static final String DESC_ERROR = "Internal Server Error";
+
+    private Map<Integer, String> statusMap;
+
+    private Integer status;
+
+    private Map<String, String> header;
 
     private OutputStream out;
 
+    /**
+     * 初始化头部信息
+     */
     public Response1(OutputStream out)
     {
         this.out = out;
+        this.header = new LinkedHashMap<>();
+        this.statusMap = new HashMap<>();
+
+        statusMap.put(STATUS_OK, DESC_OK);
+        statusMap.put(STATUS_NOT_FOUND, DESC_NOT_FOUND);
+        statusMap.put(STATUS_ERROR, DESC_ERROR);
+
+        header.put("Content-Type", "text/plain;charset=utf-8");
+        header.put("Date", new Date().toString());
     }
 
-    public void setRequest(Request1 request) {
-        this.request = request;
-    }
-
-    public void send()
+    /**
+     * 打印输出视图
+     */
+    public void write(byte[] bytes)
     {
-        byte[] buf = new byte[BUFFER_LEN];
-        FileInputStream in = null;
+        header.put("Content-Length", Integer.toString(bytes.length));
 
+        PrintStream ps = new PrintStream(out);
+        printHeader(ps);
         try {
-            File file = new File(WEB_ROOT, request.getUri());
-            if(file.exists()) {
-                in = new FileInputStream(file);
-                int len;
-                while ((len = in.read(buf, 0, BUFFER_LEN)) != -1) {
-                    out.write(buf, 0, len);
-                }
-            }
-            else{
-                String errorMessage = "HTTP/1.1 404 File Not Found\r\n" +
-                        "Content-Type: text/html\r\n" +
-                        "Content-Length: 23\r\n" +
-                        "\r\n" +
-                        "<h1>File Not Found</h1>";
-                out.write(errorMessage.getBytes());
-            }
+            ps.write(bytes);
         }
-        catch (FileNotFoundException e) {
-            logger.error("parse response error: file not found", e);
+        catch (IOException e){
+            e.printStackTrace();
         }
-        catch (IOException e) {
-            logger.error("parse response error: io exception", e);
-        }
-        finally {
-            if(in != null){
-                try {
-                    in.close();
-                }
-                catch (IOException e){
-                    logger.error("response1 close input stream error", e);
-                }
-            }
-        }
+        ps.flush();
     }
 
+    /**
+     * 打印头信息
+     */
+    private void printHeader(PrintStream ps)
+    {
+        ps.println(PROTOCOL + " " + status + " " + statusMap.get(status));
+
+        Set<Map.Entry<String, String>> set =  header.entrySet();
+        for (Map.Entry<String, String> e : set){
+            ps.println(e.getKey() + ":" + e.getValue());
+        }
+        ps.println("");
+    }
+
+    /**
+     * 设置返回状态
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    /**
+     * 设置返回头
+     */
+    public void setHeader(String key, String value) {
+        this.header.put(key, value);
+    }
 }

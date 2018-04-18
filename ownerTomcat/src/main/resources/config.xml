@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server>
+    <config>
+        <port>8780</port>
+        <protocol>HTTP/1.1</protocol>
+        <webroot>D:/tomdog/webapps</webroot>
+        <error-page>/error.html</error-page>
+    </config>
+    <type-mappings>
+        <type-mapping suffix="html" type="text/html,charset=UTF-8" />
+        <type-mapping suffix="css" type="text/css;charset=UTF-8"/>
+        <type-mapping suffix="js" type="application/javascript;charset=UTF-8"/>
+        <type-mapping suffix="json" type="application/json;charset=UTF-8"/>
+
+        <type-mapping suffix="jpg" type="image/jpeg"/>
+        <type-mapping suffix="png" type="image/png"/>
+        <type-mapping suffix="gif" type="image/gif"/>
+    </type-mappings>
+</server>

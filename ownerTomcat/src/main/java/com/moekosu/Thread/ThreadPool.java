@@ -1,12 +1,11 @@
 package com.moekosu.Thread;
 
+import com.moekosu.config.ServerConfig;
 import com.moekosu.logger.ServerLogger;
 import com.moekosu.logger.ServerLoggerFactory;
 
 import javax.net.ServerSocketFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -19,7 +18,6 @@ import java.util.Queue;
 public class ThreadPool {
 
     private static final ServerLogger logger = ServerLoggerFactory.getInstance();
-    private static final int PORT = 8780;
 
     // 线程池容量=最大线程数
     private int max = 10;
@@ -37,7 +35,7 @@ public class ThreadPool {
         this.max = max;
         this.queueMaxLength = queueMaxLength;
 
-        queue = new LinkedList<ProxyRunnable>();
+        queue = new LinkedList<>();
     }
 
     /**
@@ -48,33 +46,20 @@ public class ThreadPool {
     public boolean execute(Runnable runnable)
     {
         // 新建一个线程
-        ProxyRunnable p = new ProxyRunnable(runnable, this);
+        ProxyRunnable p = null;
+        try{
+            ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(ServerConfig.getPort());
+            Socket socket = serverSocket.accept();
+            p = new ProxyRunnable(runnable, this, socket);
+        }
+        catch (IOException e){
+            logger.error("new proxy fail", e);
+        }
         // 当前线程池未满
         if(verify())
         {
             // 执行线程
             new Thread(p).start();
-
-            try{
-                ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(PORT);
-                Socket socket = serverSocket.accept();
-                InputStream in = socket.getInputStream();
-                OutputStream out = socket.getOutputStream();
-
-                // 处理自有request
-                Request1 request = new Request1(in);
-                request.parse();
-                // 处理自有response
-                Response1 response = new Response1(out);
-                response.setRequest(request);
-                response.send();
-
-                socket.close();
-            }
-            catch (IOException e){
-                logger.error("", e);
-            }
-
             return true;
         }
         else {
@@ -143,12 +128,20 @@ public class ThreadPool {
 
     public static void main(String[] args) {
         ThreadPool pool = new ThreadPool(10, 1000);
-        pool.execute(new Runnable() {
+        Runnable r1 = new Runnable() {
             @Override
             public void run() {
-
+                ServerConfig.setPort(8780);
             }
-        });
+        };
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                ServerConfig.setPort(8781);
+            }
+        };
+        pool.execute(r1);
+        pool.execute(r2);
     }
 
 }

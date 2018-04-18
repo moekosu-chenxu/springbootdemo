@@ -1,9 +1,6 @@
 package com.moekosu.Thread;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,16 +40,30 @@ public class HttpServer1 {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
 
-                //
+                // 解析request数据
                 Request1 req = new Request1(in);
                 req.parse();
 
-                //
+                // 处理返回视图数据
                 Response1 res = new Response1(out);
-                res.setRequest(req);
-                res.send();
+                res.setHeader("Content-Type", "text/html;charset=UTF-8");
 
-                socket.close();
+                File file = new File(WEB_ROOT + req.getUri());
+
+                if (!file.exists()) {
+                    res.setStatus(404);
+                    file = new File(WEB_ROOT + "/error.html");
+                } else {
+                    res.setStatus(200);
+                }
+
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+                byte[] bys = new byte[(int) file.length()];
+                bis.read(bys);
+
+                res.write(bys);
+
+                bis.close();
             }
             catch (IOException e){
                 continue;
