@@ -5,6 +5,7 @@
         <protocol>HTTP/1.1</protocol>
         <webroot>D:/tomdog/webapps</webroot>
         <error-page>/error.html</error-page>
+        <welcome-page>index.html</welcome-page>
     </config>
     <type-mappings>
         <type-mapping suffix="html" type="text/html,charset=UTF-8" />

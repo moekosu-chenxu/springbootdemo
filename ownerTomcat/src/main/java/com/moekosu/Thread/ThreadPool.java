@@ -40,17 +40,15 @@ public class ThreadPool {
 
     /**
      * 执行线程
-     * @param runnable 线程对象
-     * @return
      */
-    public boolean execute(Runnable runnable)
+    public boolean execute(int port)
     {
         // 新建一个线程
         ProxyRunnable p = null;
         try{
-            ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(ServerConfig.getPort());
+            ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(port);
             Socket socket = serverSocket.accept();
-            p = new ProxyRunnable(runnable, this, socket);
+            p = new ProxyRunnable(this, socket);
         }
         catch (IOException e){
             logger.error("new proxy fail", e);
@@ -128,20 +126,23 @@ public class ThreadPool {
 
     public static void main(String[] args) {
         ThreadPool pool = new ThreadPool(10, 1000);
-        Runnable r1 = new Runnable() {
-            @Override
-            public void run() {
-                ServerConfig.setPort(8780);
-            }
-        };
-        Runnable r2 = new Runnable() {
-            @Override
-            public void run() {
-                ServerConfig.setPort(8781);
-            }
-        };
-        pool.execute(r1);
-        pool.execute(r2);
+//        Runnable r1 = new Runnable() {
+//            public int port = 8780;
+//            @Override
+//            public void run() {
+//            }
+//            public int getPort() {
+//                return port;
+//            }
+//        };
+//        Runnable r2 = new Runnable() {
+//            public int port = 8781;
+//            @Override
+//            public void run() {
+//            }
+//        };
+        pool.execute(8780);
+//        pool.execute(8781);
     }
 
 }

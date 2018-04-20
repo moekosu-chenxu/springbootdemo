@@ -29,7 +29,7 @@ public class ProxyRunnable implements Runnable {
     {
         while (true){
             // 执行线程
-            runnable.run();
+//            runnable.run();
             // 启动容器
             socket();
             // 执行完线程腾出空间
@@ -48,18 +48,21 @@ public class ProxyRunnable implements Runnable {
 
             // 处理自有request
             Request1 request = new Request1(in);
-            request.parse();
+            //
+            if(request.getUri() == null){
+                return;
+            }
             // 处理自有response
             Response1 response = new Response1(out);
-            response.setHeader("Content-Type", ServerConfig.getConfig(ServerConfig.TYPE_HTML));
+            response.setHeader("Content-Type", ServerConfig.getTypeConfig("html"));
             // 获取资源文件
-            File file = new File(ServerConfig.getConfig(ServerConfig.WEB_ROOT), request.getUri());
+            File file = new File(ServerConfig.getWeb_root(), request.getUri());
             if(file.exists()){
                 response.setStatus(200);
             }
             else{
                 response.setStatus(404);
-                file = new File(ServerConfig.getConfig(ServerConfig.WEB_ROOT), ServerConfig.getConfig(ServerConfig.ERROR_PAGE));
+                file = new File(ServerConfig.getWeb_root(), ServerConfig.getError_page());
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             byte[] buff = new byte[(int) file.length()];
@@ -75,12 +78,9 @@ public class ProxyRunnable implements Runnable {
 
     /**
      * 初始化线程对象
-     * @param r  具体执行的线程对象
-     * @param tp 线程池对象
      */
-    public ProxyRunnable(Runnable r, ThreadPool tp, Socket socket)
+    public ProxyRunnable(ThreadPool tp, Socket socket)
     {
-        this.runnable = r;
         this.tp = tp;
         this.socket = socket;
     }

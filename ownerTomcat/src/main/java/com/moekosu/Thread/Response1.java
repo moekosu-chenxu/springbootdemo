@@ -1,10 +1,12 @@
 package com.moekosu.Thread;
 
+import com.moekosu.config.ServerConfig;
 import com.moekosu.logger.ServerLogger;
 import com.moekosu.logger.ServerLoggerFactory;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
 /**
@@ -14,10 +16,6 @@ import java.util.*;
 public class Response1 {
 
     private static final ServerLogger logger = ServerLoggerFactory.getInstance();
-
-    private static final String WEB_ROOT = "D:\\tomdog\\webapps";
-    private static final int BUFFER_LEN = 1024;
-    private static final String PROTOCOL = "HTTP/1.1";
 
     private static final int STATUS_OK = 200;
     private static final String DESC_OK = "OK";
@@ -74,7 +72,7 @@ public class Response1 {
      */
     private void printHeader(PrintStream ps)
     {
-        ps.println(PROTOCOL + " " + status + " " + statusMap.get(status));
+        ps.println(ServerConfig.getProtocol() + " " + status + " " + statusMap.get(status));
 
         Set<Map.Entry<String, String>> set =  header.entrySet();
         for (Map.Entry<String, String> e : set){

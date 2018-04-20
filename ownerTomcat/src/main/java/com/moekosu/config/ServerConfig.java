@@ -12,23 +12,15 @@ import java.util.*;
 
 public class ServerConfig {
 
-    private static Map<String, String> map = new LinkedHashMap<>();
-
+    private static Map<String, String> type_map = new LinkedHashMap<>();
     private static int port;
+    private static String protocol;
+    private static String web_root;
+    private static String error_page;
+    private static String welcome_page;
 
-    public static final String PORT = "port";
-    public static final String PROTOCOL = "protocol";
-    public static final String WEB_ROOT = "webroot";
-    public static final String ERROR_PAGE = "error-page";
     private static final String TYPE_SUFFIX = "suffix";
     private static final String TYPE_PACKAGE = "type";
-    public static final String TYPE_HTML = "html";
-    public static final String TYPE_CSS = "css";
-    public static final String TYPE_JS = "js";
-    public static final String TYPE_JSON = "json";
-    public static final String TYPE_JPG = "jpg";
-    public static final String TYPE_PNG = "png";
-    public static final String TYPE_GIF = "gif";
 
     static{
         try {
@@ -40,15 +32,15 @@ public class ServerConfig {
             Element configs = root.element("config");
             Element mappings = root.element("type-mappings");
 
-            map.put(PORT, configs.elementText(PORT));
-            port = Integer.valueOf(configs.elementText(PORT)); // 默认端口
-            map.put(PROTOCOL, configs.elementText(PROTOCOL));
-            map.put(WEB_ROOT, configs.elementText(WEB_ROOT));
-            map.put(ERROR_PAGE, configs.elementText(ERROR_PAGE));
+            port = Integer.valueOf(configs.elementText("port")); // 默认端口
+            protocol = configs.elementText("protocol");
+            web_root = configs.elementText("webroot");
+            error_page = configs.elementText("error-page");
+            welcome_page = configs.elementText("welcome-page");
 
             List<Element> mapping = mappings.elements("type-mapping");
             for (Element mapp : mapping){
-                map.put(mapp.attributeValue(TYPE_SUFFIX), mapp.attributeValue(TYPE_PACKAGE));
+                type_map.put(mapp.attributeValue(TYPE_SUFFIX), mapp.attributeValue(TYPE_PACKAGE));
             }
         }
         catch (DocumentException e){
@@ -56,9 +48,9 @@ public class ServerConfig {
         }
     }
 
-    public static String getConfig(String key)
+    public static String getTypeConfig(String key)
     {
-        return map.get(key);
+        return type_map.get(key);
     }
 
     public static void setPort(int port_)
@@ -68,6 +60,21 @@ public class ServerConfig {
     public static int getPort()
     {
         return port;
+    }
+    public static String getProtocol()
+    {
+        return protocol;
+    }
+    public static String getWeb_root()
+    {
+        return web_root;
+    }
+    public static String getError_page()
+    {
+        return error_page;
+    }
+    public static String getWelcome_page(){
+        return welcome_page;
     }
 
 }
