@@ -1,13 +1,17 @@
 package com.moekosu.client;
 
 import com.moekosu.constant.DouyuResp;
+import com.moekosu.constant.DouyuRoom;
 import com.moekosu.constant.KeepAlive;
+import com.moekosu.util.STTUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author chenxu
@@ -22,13 +26,18 @@ public class Client {
     private long lastSendTime;
     private boolean running = false;
 
+    public static void main(String[] args) throws Exception {
+        Client client = new Client("openbarrage.douyutv.com", 8601);
+        client.start("610254");
+    }
+
     public Client(String ip, int port)
     {
         this.ip = ip;
         this.port = port;
     }
 
-    public void start() throws IOException
+    public void start(String roomId) throws Exception
     {
         if (running) {
             return;
@@ -38,9 +47,12 @@ public class Client {
         //
         lastSendTime = System.currentTimeMillis();
         running = true;
-        //
-        new Thread().start();
-        new Thread().start();
+        // 登陆授权
+        login(roomId);
+        // 接受弹幕
+//        new Thread(new receive()).start();
+        // 心跳
+//        new Thread(new heart()).start();
     }
 
     public void stop()
@@ -56,6 +68,23 @@ public class Client {
         oos.writeObject(object);
         System.out.println("发送: \t"+ object);
         oos.flush();
+    }
+
+    public void getResp() throws Exception
+    {
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        Object obj = ois.readObject();
+        DouyuResp resp = DouyuResp.parseResp(obj);
+        System.out.println(resp.toString());
+    }
+
+    public void login(String roomid) throws Exception
+    {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "loginreq");
+        map.put("roomid", roomid);
+        this.sendObject(STTUtil.encodeMultiValue(map));
+        this.getResp();
     }
 
     /**
@@ -76,7 +105,9 @@ public class Client {
                 // 超过了心跳时间，发送心跳消息
                 if(System.currentTimeMillis() - lastSendTime > keepAliveDelay) {
                     try {
-                        Client.this.sendObject(new KeepAlive());
+                        Map<String, String> map = new HashMap<>();
+                        map.put("type", "mrkl");
+                        Client.this.sendObject(STTUtil.encodeMultiValue(map));
                     }
                     catch (IOException e) {
                         System.out.println("发送心跳消息失败: " + e);
@@ -120,13 +151,13 @@ public class Client {
                         Thread.sleep(10);
                     }
                 }
-                catch (InterruptedException e) {
+                catch (IOException e) {
                     Client.this.stop();
                 }
                 catch (ClassNotFoundException e) {
                     Client.this.stop();
                 }
-                catch (IOException e) {
+                catch (InterruptedException e) {
                     Client.this.stop();
                 }
             }

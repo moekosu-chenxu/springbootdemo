@@ -1,10 +1,16 @@
 package com.moekosu.util;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public class STTUtil {
 
+	/**
+	 * 加密协议参数
+	 * @param map
+	 * @return
+	 */
 	public static String encodeMultiValue(Map<String, String> map)
 	{
 		if(map == null) {
@@ -24,6 +30,11 @@ public class STTUtil {
 		return result.toString();
 	}
 
+	/**
+	 * 转义
+	 * @param str
+	 * @return
+	 */
 	private static String escape(String str)
 	{
 		// 转义/
@@ -51,6 +62,26 @@ public class STTUtil {
 			str = buf2.toString();
 		}
 		return str;
+	}
+
+	/**
+	 * 解析返回参数
+	 * @param resp
+	 * @return
+	 */
+	public static Map<String, String> decodeResp(String resp)
+	{
+		Map<String, String> map = new HashMap<>();
+
+		String[] resps = resp.split("[/]");
+		for(String params : resps) {
+			String[] param = params.split("@=");
+			String key = param[0];
+			String value = param[1];
+			map.put(key, value);
+		}
+
+		return map;
 	}
 
 }

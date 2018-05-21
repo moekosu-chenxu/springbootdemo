@@ -24,7 +24,6 @@ import java.util.*;
 @RestController
 @SpringBootApplication
 @MapperScan(basePackages = {"com.moekosu.dao"})
-@ComponentScan(basePackages = {"com.moekosu.service"})
 public class App {
 
     // 入口
@@ -34,10 +33,6 @@ public class App {
 
 //        get();
 
-        //
-        Map<String, String> map = new HashMap<>();
-        SocketClient socketClient = new SocketClient();
-        socketClient.connect(map);
     }
 
     public static void post() throws Exception {
