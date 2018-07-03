@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,8 +20,6 @@ import java.util.Map;
 public class Request1 {
 
     private static final ServerLogger logger = ServerLoggerFactory.getInstance();
-
-    private InputStream in;
 
     private String method;
     private String uri;
@@ -31,14 +31,16 @@ public class Request1 {
 
     public Request1(InputStream in)
     {
-        this.in = in;
-        parse();
+        this.header = new LinkedHashMap<>();//保存了记录的插入顺序，Iterator遍历时必然先插入先取出
+        this.paramsGet = new HashMap<>();
+        this.paramsPost = new HashMap<>();
+        parse(in);
     }
 
     /**
      * 解析url请求
      */
-    private void parse()
+    private void parse(InputStream in)
     {
         try{
             logger.debug("parse request start.");
@@ -118,7 +120,7 @@ public class Request1 {
         }
     }
 
-    public void parse2()
+    public void parse2(InputStream in)
     {
         StringBuffer request = new StringBuffer(2048);
         int i = 0;

@@ -1,10 +1,9 @@
 package com.moekosu.Thread;
 
-import com.moekosu.config.ServerConfig;
 import com.moekosu.logger.ServerLogger;
 import com.moekosu.logger.ServerLoggerFactory;
+import com.moekosu.tabs.TabsFilter;
 
-import javax.net.ServerSocketFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,6 +18,8 @@ public class ThreadPool {
 
     private static final ServerLogger logger = ServerLoggerFactory.getInstance();
 
+    private ServerSocket serverSocket;
+
     // 线程池容量=最大线程数
     private int max = 10;
 
@@ -31,43 +32,44 @@ public class ThreadPool {
     // 排队队列
     private Queue<ProxyRunnable> queue;
 
-    public ThreadPool(int max, int queueMaxLength){
+    public ThreadPool(int max, int queueMaxLength, int port){
         this.max = max;
         this.queueMaxLength = queueMaxLength;
 
+        try {
+            this.serverSocket = new ServerSocket(port);
+        }
+        catch (IOException e) {
+            logger.error("init server socket error", e);
+        }
+
         queue = new LinkedList<>();
+
+        // 初始化注解
+        System.out.println("开始初始化注解库[TestPath]");
+        try {
+            TabsFilter.init("com.moekosu.controller");
+        }
+        catch (Exception e) {
+            System.out.println("初始化注解库[TestPath]失败："+ e);
+        }
+        System.out.println("初始化注解库[TestPath]成功");
     }
 
     /**
      * 执行线程
      */
-    public boolean execute(int port)
+    public boolean execute()
     {
-        // 新建一个线程
-        ProxyRunnable p = null;
-        try{
-            ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(port);
-            Socket socket = serverSocket.accept();
-            p = new ProxyRunnable(this, socket);
-        }
-        catch (IOException e){
-            logger.error("new proxy fail", e);
-        }
-        // 当前线程池未满
-        if(verify())
-        {
-            // 执行线程
-            new Thread(p).start();
-            return true;
-        }
-        else {
-            // 线程池已满，如果排队队列未满，塞入排队队列
-            if(queue.size() < queueMaxLength){
-                queue.add(p);
-                return true;
+        while (true) {
+            // 新建一个线程
+            Socket socket = null;
+            try {
+                socket = serverSocket.accept();
+                new Thread(new ProxyRunnable(this, socket)).start();
             }
-            else {
-                return false;
+            catch (IOException e) {
+                logger.error("server socket accept error", e);
             }
         }
     }
@@ -125,24 +127,8 @@ public class ThreadPool {
     }
 
     public static void main(String[] args) {
-        ThreadPool pool = new ThreadPool(10, 1000);
-//        Runnable r1 = new Runnable() {
-//            public int port = 8780;
-//            @Override
-//            public void run() {
-//            }
-//            public int getPort() {
-//                return port;
-//            }
-//        };
-//        Runnable r2 = new Runnable() {
-//            public int port = 8781;
-//            @Override
-//            public void run() {
-//            }
-//        };
-        pool.execute(8780);
-//        pool.execute(8781);
+        ThreadPool pool = new ThreadPool(10, 1000, 8780);
+        pool.execute();
     }
 
 }

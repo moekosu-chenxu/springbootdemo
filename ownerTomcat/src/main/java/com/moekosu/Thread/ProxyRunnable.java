@@ -3,9 +3,12 @@ package com.moekosu.Thread;
 import com.moekosu.config.ServerConfig;
 import com.moekosu.logger.ServerLogger;
 import com.moekosu.logger.ServerLoggerFactory;
+import com.moekosu.tabs.TabsFilter;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * @author chenxu
@@ -27,14 +30,12 @@ public class ProxyRunnable implements Runnable {
     @Override
     public void run()
     {
-        while (true){
-            // 执行线程
+        // 执行线程
 //            runnable.run();
-            // 启动容器
-            socket();
-            // 执行完线程腾出空间
-            tp.minus();
-        }
+        // 启动容器
+        socket();
+        // 执行完线程腾出空间
+        tp.minus();
     }
 
     private void socket()
@@ -56,8 +57,28 @@ public class ProxyRunnable implements Runnable {
             Response1 response = new Response1(out);
             response.setHeader("Content-Type", ServerConfig.getTypeConfig("html"));
             // 获取资源文件
-            File file = new File(ServerConfig.getWeb_root(), request.getUri());
-            if(file.exists()){
+            File file;
+            // 处理uri匹配controller
+            String uri = request.getUri();
+            Map<String, Object> map = TabsFilter.getMethod(uri);
+            if(map == null) {
+                // 无匹配，直接获取url
+                file = new File(ServerConfig.getWeb_root(), request.getUri());
+            }
+            else {
+                // 有匹配，则获取对应方法，反射调用，获取返回值
+                Class<?> c = (Class<?>) map.get("class");
+                Method m = (Method) map.get("method");
+                try {
+                    String targetPage = (String) m.invoke(c);
+                    file = new File(ServerConfig.getWeb_root() + targetPage + ".html");
+                }
+                catch (Exception e) {
+                    file = null;
+                    System.out.println("");
+                }
+            }
+            if(file != null && file.exists()){
                 response.setStatus(200);
             }
             else{
