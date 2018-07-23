@@ -18,6 +18,7 @@ public class ServerConfig {
     private static String web_root;
     private static String error_page;
     private static String welcome_page;
+    private static String page_suffix;
 
     private static final String TYPE_SUFFIX = "suffix";
     private static final String TYPE_PACKAGE = "type";
@@ -37,6 +38,7 @@ public class ServerConfig {
             web_root = configs.elementText("webroot");
             error_page = configs.elementText("error-page");
             welcome_page = configs.elementText("welcome-page");
+            page_suffix = configs.elementText("page-suffix");
 
             List<Element> mapping = mappings.elements("type-mapping");
             for (Element mapp : mapping){
@@ -77,4 +79,7 @@ public class ServerConfig {
         return welcome_page;
     }
 
+    public static String getPage_suffix() {
+        return page_suffix;
+    }
 }

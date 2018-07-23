@@ -3,9 +3,10 @@
     <config>
         <port>8780</port>
         <protocol>HTTP/1.1</protocol>
-        <webroot>D:/tomdog/webapps</webroot>
+        <webroot>D:/tomdog/webapps/</webroot>
         <error-page>/error.html</error-page>
         <welcome-page>index.html</welcome-page>
+        <page-suffix>html</page-suffix>
     </config>
     <type-mappings>
         <type-mapping suffix="html" type="text/html,charset=UTF-8" />

@@ -17,6 +17,10 @@ public class TabsFilter {
 
     private static Map<String, Map<String, Object>> requestMap;
 
+    static {
+        requestMap = new HashMap();
+    }
+
     private static List<Class<?>> getClass(String package_) throws Exception
     {
         String projectDir = System.getProperty("user.dir")

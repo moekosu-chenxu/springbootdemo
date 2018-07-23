@@ -60,22 +60,30 @@ public class ProxyRunnable implements Runnable {
             File file;
             // 处理uri匹配controller
             String uri = request.getUri();
+            System.out.println("uri=" + uri);
+            // 获取匹配的controller
             Map<String, Object> map = TabsFilter.getMethod(uri);
             if(map == null) {
                 // 无匹配，直接获取url
+                System.out.println("uri无匹配controller");
                 file = new File(ServerConfig.getWeb_root(), request.getUri());
             }
             else {
                 // 有匹配，则获取对应方法，反射调用，获取返回值
+                System.out.println("uri匹配到了controller");
                 Class<?> c = (Class<?>) map.get("class");
                 Method m = (Method) map.get("method");
+                System.out.println("class="+c.getName()+",method="+m.getName());
                 try {
-                    String targetPage = (String) m.invoke(c);
-                    file = new File(ServerConfig.getWeb_root() + targetPage + ".html");
+                    // 开始调用方法反射
+                    // ps: c.newInstance() 反射类之前先实例化类才能调用方法
+                    String targetPage = (String) m.invoke(c.newInstance());
+                    file = new File(ServerConfig.getWeb_root() + targetPage + "." + ServerConfig.getPage_suffix());
+                    System.out.println("反射调用成功，返回："+targetPage);
                 }
                 catch (Exception e) {
                     file = null;
-                    System.out.println("");
+                    System.out.println("反射调用"+m.getName()+"失败："+e);
                 }
             }
             if(file != null && file.exists()){

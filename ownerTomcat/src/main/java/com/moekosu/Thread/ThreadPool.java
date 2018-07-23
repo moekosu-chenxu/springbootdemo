@@ -49,11 +49,11 @@ public class ThreadPool {
         System.out.println("开始初始化注解库[TestPath]");
         try {
             TabsFilter.init("com.moekosu.controller");
+            System.out.println("初始化注解库[TestPath]成功");
         }
         catch (Exception e) {
             System.out.println("初始化注解库[TestPath]失败："+ e);
         }
-        System.out.println("初始化注解库[TestPath]成功");
     }
 
     /**
